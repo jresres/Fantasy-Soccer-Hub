@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from fa6_icons import svgs,dims
 
 def NavBarSection():
     return (
@@ -7,7 +6,7 @@ def NavBarSection():
             Div(
                 A('Home', href='#', cls='btn btn-ghost normal-case text-xl'),
                 A('Leaderboard', href='#', cls='btn btn-ghost normal-case text-xl'),
-                A('Team Stats', href='#', cls='btn btn-ghost normal-case text-xl'),
+                A('Team Stats', href='#', cls='btn btn-ghost normal-cfase text-xl'),
                 A('Player Stats', href='#', cls='btn btn-ghost normal-case text-xl'),
                 A('Trades', href='#', cls='btn btn-ghost normal-case text-xl'),
                 cls='flex-1'
@@ -16,36 +15,28 @@ def NavBarSection():
         )
     )
 
+def LeaderboardItem(place, player_name, points):
+    return (Div(
+                Div(f'{place}. {player_name}', cls='collapse-title text-xl font-medium'),
+                Div(f'Points: {points}', cls='collapse-title text-xl font-medium text-right pr-16'),
+                Div(
+                    P('Content for item 1.'),
+                    cls='collapse-content'
+                ),
+                tabindex='0',
+                cls='collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-2'
+            ))
+
 def LeaderboardSection():
     return (Div(
                 Div(
-                    Div('Will', cls='collapse-title text-xl font-medium'),
-                    Div(
-                        P('Content for item 1.'),
-                        cls='collapse-content'
-                    ),
-                    tabindex='0',
-                    cls='collapse collapse-arrow border border-base-300 bg-base-100 rounded-box'
+                    H1("Leaderboard", cls='flex justify-center text-4xl font-bold mt-10 mb-4'),
+                    LeaderboardItem("1", "Will", "10"),
+                    LeaderboardItem("2", "Jared", "20"),
+                    LeaderboardItem("3", "Owen", "18"),
+                    cls='p-4 w-1/2'
                 ),
-                Div(
-                    Div('Jared', cls='collapse-title text-xl font-medium'),
-                    Div(
-                        P('Content for item 2.'),
-                        cls='collapse-content'
-                    ),
-                    tabindex='0',
-                    cls='collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-2'
-                ),
-                Div(
-                    Div('Owen', cls='collapse-title text-xl font-medium'),
-                    Div(
-                        P('Content for item 3.'),
-                        cls='collapse-content'
-                    ),
-                    tabindex='0',
-                    cls='collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-2'
-                ),
-                cls='p-4'
+                cls='flex justify-center items-center'
             )
         )
 
