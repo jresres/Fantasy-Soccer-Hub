@@ -29,12 +29,38 @@ def NavBarSection(currTab):
         cls='navbar bg-sky-900')
     )
 
-def LeaderboardItem(player_name, player_points=0):
+def LeaderboardTeamTableItem(team_name, team_points):
+    return (
+        Td(team_name),
+        Td(team_points)
+    )
+
+def LeaderboardTeamTable(UserID):
+    user_teams = get_users_teams(UserID)
+    return (
+        Table(
+            Thead(
+                Tr(
+                    Th('Team'),
+                    Th('Points')
+                )
+            ),
+            Tbody(
+                *[Tr(LeaderboardTeamTableItem(team[0], team[1])) for team in user_teams]
+            ),
+            cls='table'
+        )
+    )
+
+def LeaderboardItem(user, user_points=0):
     return (Div(
-        Div(f'{player_name}', cls='collapse-title text-xl font-medium'),
-        Div(f'Points: {player_points}', cls='collapse-title text-xl font-medium text-right pr-16'),
+        Div(f'{user['UserName']}', cls='collapse-title text-xl font-medium'),
+        Div(f'Points: {user_points}', cls='collapse-title text-xl font-medium text-right pr-16'),
         Div(
-            P('Content for item 2.'),
+            Div(
+                LeaderboardTeamTable(user['UserID']),
+                cls='overflow-x-auto'
+            ),
             cls='collapse-content'
         ),
         tabindex=0,
@@ -46,7 +72,7 @@ def LeaderboardSection():
     return (Div(
         Div(
             H1("Leaderboard", cls='flex justify-center text-4xl font-bold mt-6 mb-4'),
-            *[LeaderboardItem(user['UserName']) for user in users],
+            *[LeaderboardItem(user) for user in users],
             cls='p-4 w-1/2'
         ),
         cls='flex justify-center items-center')
