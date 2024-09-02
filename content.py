@@ -11,7 +11,7 @@ def get_users_teams(UserID):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT TeamName, TeamPoints FROM Teams WHERE UserID =?", (UserID,))
+    cursor.execute("SELECT TeamName, TeamPoints FROM Teams WHERE UserID =? ORDER BY TeamPoints DESC", (UserID,))
     user_teams = cursor.fetchall()
 
     conn.commit()
