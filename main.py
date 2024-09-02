@@ -17,7 +17,9 @@ def NavButton(title, is_active=False):
         title, 
         id=f'link-{title.lower().replace(' ','-')}', 
         cls=active if is_active else inactive,
-        href=f"/{title.lower().replace(' ','_')}")
+        href="#",
+        hx_get=f"/{title.lower().replace(' ','_')}",
+        hx_target="#main-content")
     )
 
 def NavBarSection(currTab):
@@ -64,7 +66,7 @@ def LeaderboardItem(user, user_points=0):
             cls='collapse-content'
         ),
         tabindex=0,
-        cls='collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-2')
+        cls='collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-2 hover:bg-slate-700')
     )
 
 def LeaderboardSection():
@@ -78,15 +80,6 @@ def LeaderboardSection():
         cls='flex justify-center')
     )
 
-def LeagueTableTab(tabIndex, leagueName):
-    checked_input = Input(type='radio', name='league_tabs', role='tab', aria_label=f'{leagueName}', cls='tab flex-1 text-center', checked='checked')
-    unchecked_input = Input(type='radio', name='league_tabs', role='tab', aria_label=f'{leagueName}', cls='tab flex-1 text-center')
-
-    return (
-        (checked_input if tabIndex == 0 else unchecked_input)
-        # Div(f'HERE', role='tabpanel', cls='tab-content'),
-    )
-
 @app.get("/")
 def Home():
     return Leaderboard()
@@ -98,8 +91,19 @@ def Leaderboard():
         Title(title), 
         Main(
             NavBarSection(currTab=0),
-            LeaderboardSection())
+            LeaderboardSection(),
+            id="main-content")
     )
+
+def LeagueTableTab(LeagueID, LeagueName):
+    return (A(
+        LeagueName,
+        id=f'tab-{LeagueName.lower().replace(' ','-')}', 
+        hx_get=f"/league_table/{LeagueID}",
+        hx_target="#main-content",
+        href='#',
+        cls='tab tab-bordered flex-1 focus:border-b-2 hover:bg-gray-800'
+    ))
 
 @app.get("/league_table")
 def LeagueTable():
@@ -108,20 +112,73 @@ def LeagueTable():
     return (
         NavBarSection(currTab=1),
         Div(
-            *[LeagueTableTab(i, league[2]) for i, league in enumerate(leagues)],
-            role='tablist',
-            cls='tabs tabs-bordered flex justify-center'
+            Div(
+                *[LeagueTableTab(LeagueID=league[0], LeagueName=league[2]) for league in leagues],
+                cls='tabs flex justify-center'
+            ),
+            cls='w-full'
+        )
+    )
+
+def LeagueStandingsTableRow(team):
+    return (
+        Tr(
+            Td(team[8]),
+            Td(team[2]),
+            Td(team[9]),
+            Td(team[10]),
+            Td(team[12]),
+            Td(team[11]),
+            Td(team[5]),
+            Td(team[6]),
+            Td(team[7]),
+            Td(team[13]),
+        )
+    )
+
+def LeagueStandingsTable(teams):
+    return (
+        Table(
+            Thead(
+                Tr(
+                    Th('Rank'),
+                    Th('Team'),
+                    Th('MP'),
+                    Th('W'),
+                    Th('D'),
+                    Th('L'),
+                    Th("GF"),
+                    Th('GA'),
+                    Th('GD'),
+                    Th('Points')
+                )
+            ),
+            Tbody(
+                *[LeagueStandingsTableRow(team) for team in teams]
+            ),
+            cls='table'
+        )
+    )
+
+@app.get("/league_table/{LeagueID}")
+def LeagueTableContent(LeagueID:int):
+    teams = get_all_league_teams(LeagueID)
+    return (
+        LeagueTable(),
+        Div(
+            LeagueStandingsTable(teams),
+            cls='overflox-x-auto'
         )
     )
 
 @app.get("/player_table")
-def LeagueTable():
+def PlayerTable():
     return (
         NavBarSection(currTab=2)
     )
 
 @app.get("/free_agency_requests")
-def LeagueTable():
+def FreeAgencyRequests():
     return (
         NavBarSection(currTab=3)
     )
