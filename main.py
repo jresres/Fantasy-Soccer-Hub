@@ -1,5 +1,6 @@
 from fasthtml.common import *
 from content import *
+from fa6_icons import svgs, dims
 
 # Loading tailwind and daisyui
 tlink = Script(src="https://cdn.tailwindcss.com"),
@@ -54,9 +55,9 @@ def LeaderboardTeamTable(UserID):
         )
     )
 
-def LeaderboardItem(user):
+def LeaderboardItem(user, user_rank):
     return (Div(
-        Div(f'{user[1]}', cls='collapse-title text-xl font-medium'),
+        Div(f'{user_rank + 1}. {user[1]}', cls='collapse-title text-xl font-medium'),
         Div(f'Points: {user[2]}', cls='collapse-title text-xl font-medium text-right pr-16'),
         Div(
             Div(
@@ -74,7 +75,7 @@ def LeaderboardSection():
     return (Div(
         Div(
             H1("Leaderboard", cls='flex justify-center text-4xl font-bold mt-6 mb-4'),
-            *[LeaderboardItem(user) for user in users],
+            *[LeaderboardItem(user, i) for i, user in enumerate(users)],
             cls='p-4 w-3/4'
         ),
         cls='flex justify-center')
@@ -95,28 +96,35 @@ def Leaderboard():
             id="main-content")
     )
 
-def LeagueTableTab(LeagueID, LeagueName):
+def LeagueTableTab(LeagueID, LeagueName, is_active=False):
+    active = 'tab tab-bordered flex-1 border-b-2 hover:bg-gray-700 mt-8'
+    inactive = 'tab tab-bordered flex-1 hover:bg-gray-700 mt-8'
+
     return (A(
         LeagueName,
         id=f'tab-{LeagueName.lower().replace(' ','-')}', 
         hx_get=f"/league_table/{LeagueID}",
         hx_target="#main-content",
         href='#',
-        cls='tab tab-bordered flex-1 focus:border-b-2 hover:bg-gray-800'
+        cls=active if is_active else inactive
     ))
 
 @app.get("/league_table")
-def LeagueTable():
+def LeagueTable(LeaguePK:int=840):
     leagues = get_all_leagues()
-
+    teams = get_all_league_teams(LeaguePK)
     return (
         NavBarSection(currTab=1),
         Div(
             Div(
-                *[LeagueTableTab(LeagueID=league[0], LeagueName=league[2]) for league in leagues],
+                *[LeagueTableTab(LeagueID=league[0], LeagueName=league[2], is_active=LeaguePK==league[0]) for league in leagues],
                 cls='tabs flex justify-center'
             ),
             cls='w-full'
+        ),
+        Div(
+            LeagueStandingsTable(teams),
+            cls='overflox-x-auto'
         )
     )
 
@@ -141,7 +149,8 @@ def LeagueStandingsTable(teams):
     return (
         Table(
             Thead(
-                Tr(Th('Rank'),Th('Team'),Th('MP'),Th('W'),Th('D'),Th('L'),Th("GF"),Th('GA'),Th('GD'),Th('Points')
+                Tr(Th('Rank'),Th('Team'),Th('MP'),Th('W'),Th('D'),Th('L'),Th("GF"),Th('GA'),Th('GD'),Th('Points'),
+                   cls='bg-sky-900'
                 )
             ),
             Tbody(
@@ -155,7 +164,7 @@ def LeagueStandingsTable(teams):
 def LeagueTableContent(LeagueID:int):
     teams = get_all_league_teams(LeagueID)
     return (
-        LeagueTable(),
+        LeagueTable(LeagueID),
         Div(
             LeagueStandingsTable(teams),
             cls='overflox-x-auto'

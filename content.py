@@ -30,7 +30,7 @@ def get_all_leagues():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM Leagues")
+    cursor.execute("SELECT * FROM Leagues ORDER BY LeagueID ASC")
     leagues = cursor.fetchall()
 
     conn.commit()
