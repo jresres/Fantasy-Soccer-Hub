@@ -35,7 +35,7 @@ def get_all_league_teams(LeagueID):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM Teams WHERE LeagueID =?", (LeagueID,))
+    cursor.execute("SELECT * FROM Teams WHERE LeagueID =? ORDER BY TeamRank ASC", (LeagueID,))
     league_teams = cursor.fetchall()
 
     conn.commit()

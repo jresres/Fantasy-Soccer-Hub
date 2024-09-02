@@ -133,6 +133,7 @@ def LeagueStandingsTableRow(team):
             Td(team[6]),
             Td(team[7]),
             Td(team[13]),
+            cls='hover'
         )
     )
 
@@ -140,17 +141,7 @@ def LeagueStandingsTable(teams):
     return (
         Table(
             Thead(
-                Tr(
-                    Th('Rank'),
-                    Th('Team'),
-                    Th('MP'),
-                    Th('W'),
-                    Th('D'),
-                    Th('L'),
-                    Th("GF"),
-                    Th('GA'),
-                    Th('GD'),
-                    Th('Points')
+                Tr(Th('Rank'),Th('Team'),Th('MP'),Th('W'),Th('D'),Th('L'),Th("GF"),Th('GA'),Th('GD'),Th('Points')
                 )
             ),
             Tbody(
