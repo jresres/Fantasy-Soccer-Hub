@@ -19,4 +19,16 @@ def get_users_teams(UserID):
 
     return user_teams
 
+def get_all_leagues():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM Leagues")
+    leagues = cursor.fetchall()
+
+    conn.commit()
+    conn.close()
+
+    return leagues
+
 NAV_CONTENT = ["Leaderboard", "League Table", "Player Table", "Free Agency Requests"]

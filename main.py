@@ -73,9 +73,18 @@ def LeaderboardSection():
         Div(
             H1("Leaderboard", cls='flex justify-center text-4xl font-bold mt-6 mb-4'),
             *[LeaderboardItem(user) for user in users],
-            cls='p-4 w-1/2'
+            cls='p-4 w-3/4'
         ),
-        cls='flex justify-center items-center')
+        cls='flex justify-center')
+    )
+
+def LeagueTableTab(tabIndex, leagueName):
+    checked_input = Input(type='radio', name='league_tabs', role='tab', aria_label=f'{leagueName}', cls='tab flex-1 text-center', checked='checked')
+    unchecked_input = Input(type='radio', name='league_tabs', role='tab', aria_label=f'{leagueName}', cls='tab flex-1 text-center')
+
+    return (
+        (checked_input if tabIndex == 0 else unchecked_input)
+        # Div(f'HERE', role='tabpanel', cls='tab-content'),
     )
 
 @app.get("/")
@@ -94,8 +103,15 @@ def Leaderboard():
 
 @app.get("/league_table")
 def LeagueTable():
+    leagues = get_all_leagues()
+
     return (
-        NavBarSection(currTab=1)
+        NavBarSection(currTab=1),
+        Div(
+            *[LeagueTableTab(i, league[2]) for i, league in enumerate(leagues)],
+            role='tablist',
+            cls='tabs tabs-bordered flex justify-center'
+        )
     )
 
 @app.get("/player_table")
