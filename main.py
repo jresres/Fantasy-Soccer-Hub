@@ -54,13 +54,13 @@ def LeaderboardTeamTable(UserID):
         )
     )
 
-def LeaderboardItem(user, user_points=0):
+def LeaderboardItem(user):
     return (Div(
-        Div(f'{user['UserName']}', cls='collapse-title text-xl font-medium'),
-        Div(f'Points: {user_points}', cls='collapse-title text-xl font-medium text-right pr-16'),
+        Div(f'{user[1]}', cls='collapse-title text-xl font-medium'),
+        Div(f'Points: {user[2]}', cls='collapse-title text-xl font-medium text-right pr-16'),
         Div(
             Div(
-                LeaderboardTeamTable(user['UserID']),
+                LeaderboardTeamTable(user[0]),
                 cls='overflow-x-auto'
             ),
             cls='collapse-content'
@@ -70,7 +70,7 @@ def LeaderboardItem(user, user_points=0):
     )
 
 def LeaderboardSection():
-    users = get_all_users(db)
+    users = get_all_users()
     return (Div(
         Div(
             H1("Leaderboard", cls='flex justify-center text-4xl font-bold mt-6 mb-4'),

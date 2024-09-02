@@ -2,10 +2,17 @@ import sqlite3
 
 DB_NAME = "data/fantasy_soccer.db"
 
-def get_all_users(db):
-    dt = db.t
-    userID_sql = f"""select * from {dt.Users}"""
-    return db.q(userID_sql)
+def get_all_users():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM Users ORDER BY UserTeamPoints DESC")
+    users = cursor.fetchall()
+
+    conn.commit()
+    conn.close()
+
+    return users
 
 def get_users_teams(UserID):
     conn = sqlite3.connect(DB_NAME)
