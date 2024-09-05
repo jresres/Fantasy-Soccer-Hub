@@ -96,14 +96,14 @@ def Leaderboard():
             id="main-content")
     )
 
-def LeagueTableTab(LeagueID, LeagueName, is_active=False):
+def LeagueTableTab(LeagueID, LeagueName, target, is_active=False):
     active = 'tab tab-bordered flex-1 border-b-2 hover:bg-gray-700 mt-8'
     inactive = 'tab tab-bordered flex-1 hover:bg-gray-700 mt-8'
 
     return (A(
         LeagueName,
         id=f'tab-{LeagueName.lower().replace(' ','-')}', 
-        hx_get=f"/league_table/{LeagueID}",
+        hx_get=f"/{target}/{LeagueID}",
         hx_target="#main-content",
         href='#',
         cls=active if is_active else inactive
@@ -113,11 +113,12 @@ def LeagueTableTab(LeagueID, LeagueName, is_active=False):
 def LeagueTable(LeaguePK:int=840):
     leagues = get_all_leagues()
     teams = get_all_league_teams(LeaguePK)
+    target = 'league_table'
     return (
         NavBarSection(currTab=1),
         Div(
             Div(
-                *[LeagueTableTab(LeagueID=league[0], LeagueName=league[2], is_active=LeaguePK==league[0]) for league in leagues],
+                *[LeagueTableTab(LeagueID=league[0], LeagueName=league[2], target=target, is_active=LeaguePK==league[0]) for league in leagues],
                 cls='tabs flex justify-center'
             ),
             cls='w-full'
@@ -172,9 +173,30 @@ def LeagueTableContent(LeagueID:int):
     )
 
 @app.get("/player_table")
-def PlayerTable():
+def PlayerTable(LeaguePK:int=840):
+    leagues = get_all_leagues()
+    target = 'player_table'
     return (
-        NavBarSection(currTab=2)
+        NavBarSection(currTab=2),
+        Div(
+            Div(
+                *[LeagueTableTab(LeagueID=league[0], LeagueName=league[2], target=target, is_active=LeaguePK==league[0]) for league in leagues],
+                cls='tabs flex justify-center'
+            ),
+            cls='w-full'
+        ),
+
+    )
+
+@app.get("/player_table/{LeagueID}")
+def PlayerTableContent(LeagueID:int):
+    # teams = get_all_league_teams(LeagueID)
+    return (
+        PlayerTable(LeagueID),
+        # Div(
+        #     LeagueStandingsTable(teams),
+        #     cls='overflox-x-auto'
+        # )
     )
 
 @app.get("/free_agency_requests")

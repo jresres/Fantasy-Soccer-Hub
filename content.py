@@ -38,6 +38,18 @@ def get_all_leagues():
 
     return leagues
 
+def get_all_players():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM Players")
+    players = cursor.fetchall()
+
+    conn.commit()
+    conn.close()
+
+    return players
+
 def get_all_league_teams(LeagueID):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
